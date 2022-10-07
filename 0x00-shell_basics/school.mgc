@@ -1,2 +1,2 @@
-\n0 string SCHOOL School data\n::mfme School
+\no string SCHOOL School data\n!:mfme School
 file -c -m school.mgc
