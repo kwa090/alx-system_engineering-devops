@@ -1,9 +1,11 @@
-# SSH client configuration file
-# The SSH client will only use Key Authentication
-# Password based Authentication is disabled 
+#!/usr/bin/env bash
+# Configure ssh client to use public key authentication and other settings
 
+# Configure ssh client to use public key authentication and other settings
 Host *
-    HostName 55.208.141.106
-    SeverAliveInterval 121
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
     IdentityFile ~/.ssh/school
     PasswordAuthentication no
