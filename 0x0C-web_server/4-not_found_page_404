@@ -1,30 +1,22 @@
-# This Puppet script installs nginx web server and sets up a redirect from /redirect_me to a github profile
+#!/usr/bin/env bash
+# Install nginx and start it
+apt-get -y install nginx
 
-# Install the nginx package if it's not already installed
-package {'nginx':
-  ensure => 'present',
-}
+# Firewall setting: Allow Nginx to serve on HTTP
+ufw allow 'Nginx HTTP'
 
-# Run the command to update the system and install nginx
-exec {'install':
-  command  => 'sudo apt-get update ; sudo apt-get -y install nginx',
-  provider => shell,
-}
+# Create a new index.html file that will be used over the default index.nginx-debian.html
+echo "Holberton School" >> /var/www/html/index.html
 
-# Create a basic HTML file to verify that nginx is working
-exec {'Hello':
-  command  => 'echo "Hello World!" | sudo tee /var/www/html/index.html',
-  provider => shell,
-}
+#Give the user  ownership to website files
+chown -R $USER:$USER /var/www/html
+chmod -R 755 /var/www
 
-# Configure nginx to redirect /redirect_me to a specific website
-exec {'redirect':
-  command  => 'sudo sed -i "s/listen 80 default_server;/listen 80 default_server;\\n\\tlocation \/redirect_me {\\n\\t\\treturn 301 https:\/\/https://github.com/besthor\/;\\n\\t}/" /etc/nginx/sites-available/default',
-  provider => shell,
-}
+# Redirect to /redirect_me to a youtube video
+sed -i '37i\rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
 
-# Restart nginx to apply the changes
-exec {'restart':
-  command  => 'sudo service nginx restart',
-  provider => shell,
-}
+# Setup 404 page
+echo "Ceci n'est pas une page\n" >> /var/www/html/error_404.html
+sed -i '38i\error_page 404 /error_404.html;' /etc/nginx/sites-available/default
+
+service nginx start

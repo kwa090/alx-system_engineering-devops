@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# A script that Configures Nginx to redirect requests
+# Install nginx and start it
+apt-get -y install nginx
 
-# Update package lists
-sudo apt-get update
+# Firewall setting: Allow Nginx to serve on HTTP
+ufw allow 'Nginx HTTP'
 
-# Install Nginx
-sudo apt-get install -y nginx
+# Override the default index file served as home page
+echo "Holberton School" >> /var/www/html/index.html
 
-# Configure Nginx to redirect requests
-sudo sed -i '/server_name _;/a \\n    location /redirect_me {\n        return 301 http://example.com/newpage;\n    }' /etc/nginx/sites-available/default
+#Give the user  ownership to website files
+sudo chown -R $USER:$USER /var/www/html
+sudo chmod -R 755 /var/www
 
-# Test Nginx configuration
-sudo nginx -t
+# Redirect to /redirect_me to a youtube video
+sed -i '37i\rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
 
-# Reload Nginx to apply changes
-sudo service nginx reload
+service nginx start
