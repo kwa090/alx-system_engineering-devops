@@ -1,20 +1,24 @@
 #!/usr/bin/python3
-"""
-This script writes data from an API to a csv file
-"""
-import csv
+"""Accessing a REST API for todo lists of employees"""
+
 import requests
 import sys
-if __name__ == "__main__":
-    todo = requests.get('https://jsonplaceholder.typicode.com/todos/',
-                        params={'userId': sys.argv[1]}).json()
-    user = requests.get('https://jsonplaceholder.typicode.com/users/{}'
-                        .format(sys.argv[1])).json()
-    userid = sys.argv[1]
-    username = user.get('username')
 
-    with open("{}.csv".format(userid), "w", newline="") as csvfile:
-        file_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        [file_writer.writerow(
-            [userid, username, task.get('completed'), task.get('title')]
-        )for task in todo]
+
+if __name__ == '__main__':
+    employeeId = sys.argv[1]
+    baseUrl = "https://jsonplaceholder.typicode.com/users"
+    url = baseUrl + "/" + employeeId
+
+    response = requests.get(url)
+    username = response.json().get('username')
+
+    todoUrl = url + "/todos"
+    response = requests.get(todoUrl)
+    tasks = response.json()
+
+    with open('{}.csv'.format(employeeId), 'w') as file:
+        for task in tasks:
+            file.write('"{}","{}","{}","{}"\n'
+                       .format(employeeId, username, task.get('completed'),
+                               task.get('title')))
