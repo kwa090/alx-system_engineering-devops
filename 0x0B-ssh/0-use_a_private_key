@@ -2,4 +2,4 @@
 # This bash script uses ssh to connect to my Holberton School
 # Ubuntu server using the private key 
 
-ssh -i ~/.ssh/school ubuntu@54.157.181.157
+ssh -i ~/.ssh/school ubuntu@18.206.192.50
